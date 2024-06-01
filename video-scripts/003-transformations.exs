@@ -1,0 +1,129 @@
+# Run as: iex --dot-iex path/to/notebook.exs
+
+# Title: ELIXIR - VIDEO - 003
+
+# ── Transformações - Extração dos dados ──
+
+# # Request
+
+# GET /books HTTP/1.1
+# Host: sabecontar.com
+# User-Agent: Browser/1.0
+# Accept: */*
+
+# # Response
+
+# HTTP/1.1 200 OK
+# Content-Type: text/html
+# Content-Length: 112
+
+# O homem que calculava, Malba Tahan
+# StarWars - Herdeiros do Império, Timothy Zhan
+# O Silmarilion - J.R.R.Tolkien
+
+# Request
+# Método / Path / Protocolo / Headers / Body
+
+# String com padrão de salto de linha \n
+request_n = """
+GET /books HTTP/1.1
+Host: sabecontar.com
+User-Agent: Browser/1.0
+Accept: */*
+
+"""
+
+IO.puts("puts\n=========================")
+IO.puts(request_n)
+IO.puts("=========================")
+
+IO.puts("inspect\n=========================")
+IO.inspect(request_n)
+IO.puts("=========================")
+
+# String com padrão de salto de linha \r\n
+
+request_rn =
+  "GET /books HTTP/1.1\r\nHost: sabecontar.com\r\nUser-Agent: Browser/1.0\r\nAccept: */*\r\n\r\n"
+
+# IO.puts("puts\n=========================")
+# IO.puts(request_rn)
+# IO.puts("=========================")
+
+IO.puts("inspect\n=========================")
+IO.inspect(request_rn)
+IO.inspect(request_n)
+IO.puts("=========================")
+
+# Normalizar/Padronizar a string com \n
+request = """
+GET /books HTTP/1.1
+Host: sabecontar.com
+User-Agent: Browser/1.0
+Accept: */*
+
+"""
+
+new_request = String.replace(request, "\r\n", "\n")
+
+# Transformar o request normalizado em uma lista
+lista = String.split(new_request, "\n")
+
+# # Pegar a primeira linha
+# first_line_1 = List.first(lista)
+# IO.puts("==> first_line 1 ==> #{first_line_1}")
+
+# Fazendo tudo junto
+first_line =
+  request
+  |> String.replace("\r\n", "\n")
+  |> String.split("\n")
+  |> List.first()
+
+IO.puts("==> first_line 2 ==> #{first_line}")
+
+# Quebrar a primeira linha nos dados do Request
+comandos = String.split(first_line)
+metodo = Enum.at(comandos, 0)
+path = Enum.at(comandos, 1)
+protocolo = Enum.at(comandos, 2)
+IO.puts("metodo: '#{metodo}', path: '#{path}', protocolo: '#{protocolo}'")
+
+# ── Pattern Matching (correspondência de padrões) ──
+
+# a = 1           # Bind
+# a = 2           # Re-Bind
+# 1 = a           # match-error
+# 2 = a           # match
+# a = 3          # match-error
+# Match
+[1, 2, 3] = [1, 2, 3]
+# [1, 2, 3] = [1, 7, 3]           # Match error
+# comandos
+
+# Destructuring / Descontrução
+# [a, 2, 3] = [1, 2, 3]           # Match / Bind
+# IO.puts "a: #{a}"
+# [a, 2, 3] = [1, 7, 3]           # Match / error
+# [a, 2, c] = [1, 2, 3]           # Match / Bind
+# IO.puts "a: #{a} / c: #{c}"
+# [a, b, c] = [1, 2, 3]           # Match / Bind
+# IO.puts "a: #{a} / b: #{b} / c: #{c}"
+# [a, _, b] = [1, 2, 458]              # Match error / tamanhos diferentes
+# IO.puts "a: #{a} / b: #{b}"
+
+[metodo, path, protocolo] = comandos
+IO.puts("metodo: '#{metodo}', path: '#{path}', protocolo: '#{protocolo}'")
+
+# Quebrar a primeira linha nos dados do Request
+[metodo, path, protocolo] = String.split(first_line)
+IO.puts("metodo: '#{metodo}', path: '#{path}', protocolo: '#{protocolo}'")
+
+[metodo, path, protocolo] =
+  request
+  |> String.replace("\r\n", "\n")
+  |> String.split("\n")
+  |> List.first()
+  |> String.split()
+
+IO.puts("metodo: '#{metodo}', path: '#{path}', protocolo: '#{protocolo}'")
