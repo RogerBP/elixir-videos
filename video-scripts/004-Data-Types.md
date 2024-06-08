@@ -7,3 +7,5 @@
 5. IO.puts()
 6. IO.inspect
 7. Shortcuts
+
+https://github.com/RogerBP/elixir-videos
