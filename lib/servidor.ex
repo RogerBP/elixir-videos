@@ -1,5 +1,14 @@
 defmodule Servidor do
-  def hello(name) do
-    "Olá #{name}, estamos criando nosso primeiro projeto no elixir"
+  def testar do
+    request = """
+    GET /games HTTP/1.1
+    Host: sabecontar.com
+    User-Agent: Browser/1.0
+    Accept: */*
+
+    """
+
+    response = Servidor.Handler.handle(request)
+    IO.puts(response)
   end
 end
