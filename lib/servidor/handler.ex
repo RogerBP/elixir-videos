@@ -17,93 +17,38 @@ defmodule Servidor.Handler do
     %{method: method, path: path, protocol: protocol, resp_body: ""}
   end
 
-  def route(%{path: "/books"} = conv) do
-    resp_body =
-      books()
-      |> Enum.join("\n")
+  def route(%{path: "/books"} = conv), do: get_full_resp(conv, Servidor.Api.books())
+  def route(%{path: "/games"} = conv), do: get_full_resp(conv, Servidor.Api.games())
+  def route(%{path: "/board-games"} = conv), do: get_full_resp(conv, Servidor.Api.board_games())
 
-    %{
-      conv
-      | resp_body: resp_body
-    }
+  def route(%{path: "/books/" <> i} = conv), do: get_resp_item(conv, Servidor.Api.books(), i)
+  def route(%{path: "/games/" <> i} = conv), do: get_resp_item(conv, Servidor.Api.games(), i)
+
+  def route(%{path: "/board-games/" <> i} = conv),
+    do: get_resp_item(conv, Servidor.Api.board_games(), i)
+
+  def route(conv), do: %{conv | resp_body: "não encontrado"}
+
+  def get_full_resp(conv, items) do
+    items
+    |> Enum.join("\n")
+    |> put_resp(conv)
   end
 
-  def route(%{path: "/books/" <> i} = conv) do
-    resp_body =
-      i
-      |> String.to_integer()
-      |> Kernel.-(1)
-      |> get_book
-      |> check_book_name
+  def put_resp(resp, conv), do: Map.put(conv, :resp_body, resp)
 
-    %{
-      conv
-      | resp_body: resp_body
-    }
+  def get_resp_item(conv, items, item) do
+    item
+    |> String.to_integer()
+    |> Kernel.-(1)
+    |> get_item(conv, items)
+    |> check_resp
   end
 
-  def route(%{path: "/games"} = conv) do
-    resp_body =
-      games()
-      |> Enum.join("\n")
+  def get_item(index, conv, items), do: %{conv | resp_body: Enum.at(items, index)}
 
-    %{
-      conv
-      | resp_body: resp_body
-    }
-  end
-
-  def route(%{path: "/board-games"} = conv) do
-    resp_body =
-      board_games()
-      |> Enum.join("\n")
-
-    %{
-      conv
-      | resp_body: resp_body
-    }
-  end
-
-  def route(conv) do
-    %{
-      conv
-      | resp_body: "não encontrado"
-    }
-  end
-
-  def get_book(index) do
-    Enum.at(books(), index)
-  end
-
-  def check_book_name(nil) do
-    "não encontrado"
-  end
-
-  def check_book_name(book_name), do: book_name
-
-  def books do
-    [
-      "O homem que calculava, Malba Tahan",
-      "StarWars - Herdeiros do Império, Timothy Zhan",
-      "O Silmarilion - J.R.R.Tolkien"
-    ]
-  end
-
-  def games do
-    [
-      "Factorio, Wube Software LTD.",
-      "Satisfactory, Coffee Stain Studios",
-      "TerraTech, Payload Studios"
-    ]
-  end
-
-  def board_games() do
-    [
-      "Terraforming mars, Jacob Frixelius",
-      "Quartz, Sergio Halaban",
-      "Azul, Michael Kiesling"
-    ]
-  end
+  def check_resp(%{resp_body: nil} = conv), do: %{conv | resp_body: "não encontrado"}
+  def check_resp(conv), do: conv
 
   def format_response(conv) do
     body = String.replace(conv.resp_body, "\r\n", "\n")
