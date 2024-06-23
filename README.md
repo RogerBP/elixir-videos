@@ -12,4 +12,4 @@
 
 ## 006 - Router
 
-## 007 - ORGANIZÃO DO CÓDIGO
+## 007 - Organizão do código
