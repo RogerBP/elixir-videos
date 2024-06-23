@@ -7,7 +7,7 @@ defmodule Servidor do
     exec_request("GET /#{recurso}/#{item}")
   end
 
-  def exec_request(comando) do
+  defp exec_request(comando) do
     request = """
     #{comando} HTTP/1.1
     Host: sabecontar.com
@@ -17,10 +17,10 @@ defmodule Servidor do
     """
 
     response = Servidor.Handler.handle(request)
-    IO.puts("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n")
-    IO.puts("=========================================")
+    IO.puts(IO.ANSI.clear())
+    IO.puts("==========================================")
     IO.puts(response)
-    IO.puts("=========================================")
+    IO.puts("==========================================")
     IO.puts("\n\n\n\n")
   end
 end

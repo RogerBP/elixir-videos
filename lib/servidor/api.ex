@@ -9,7 +9,7 @@ defmodule Servidor.Api do
 
   def games do
     [
-      "Factorio, Wube Software LTD.",
+      "Factorio, Wübe Software LTD.",
       "Satisfactory, Coffee Stain Studios",
       "TerraTech, Payload Studios"
     ]

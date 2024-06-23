@@ -6,7 +6,7 @@ defmodule Servidor.Handler do
     |> format_response
   end
 
-  def parse(request) do
+  defp parse(request) do
     [method, path, protocol] =
       request
       |> String.replace("\r\n", "\n")
@@ -14,51 +14,70 @@ defmodule Servidor.Handler do
       |> List.first()
       |> String.split()
 
-    %{method: method, path: path, protocol: protocol, resp_body: ""}
+    %{method: method, path: path, protocol: protocol, resp_body: "", status: 200}
   end
 
-  def route(%{path: "/books"} = conv), do: get_full_resp(conv, Servidor.Api.books())
-  def route(%{path: "/games"} = conv), do: get_full_resp(conv, Servidor.Api.games())
-  def route(%{path: "/board-games"} = conv), do: get_full_resp(conv, Servidor.Api.board_games())
+  defp route(%{path: "/books"} = conv), do: get_full_resp(conv, Servidor.Api.books())
 
-  def route(%{path: "/books/" <> i} = conv), do: get_resp_item(conv, Servidor.Api.books(), i)
-  def route(%{path: "/games/" <> i} = conv), do: get_resp_item(conv, Servidor.Api.games(), i)
+  defp route(%{path: "/games"} = conv), do: get_full_resp(conv, Servidor.Api.games())
 
-  def route(%{path: "/board-games/" <> i} = conv),
-    do: get_resp_item(conv, Servidor.Api.board_games(), i)
+  defp route(%{path: "/board-games"} = conv), do: get_full_resp(conv, Servidor.Api.board_games())
 
-  def route(conv), do: %{conv | resp_body: "não encontrado"}
+  defp route(%{path: "/books/" <> item} = conv),
+    do: get_resp_item(conv, Servidor.Api.books(), item)
 
-  def get_full_resp(conv, items) do
+  defp route(%{path: "/games/" <> item} = conv),
+    do: get_resp_item(conv, Servidor.Api.games(), item)
+
+  defp route(%{path: "/board-games/" <> item} = conv),
+    do: get_resp_item(conv, Servidor.Api.board_games(), item)
+
+  defp route(conv), do: %{conv | resp_body: "não encontrado", status: 404}
+
+  defp get_resp_item(conv, items, item) do
+    item
+    |> String.to_integer()
+    |> Kernel.-(1)
+    |> get_item(items)
+    |> put_resp(conv)
+    |> check_item_name()
+  end
+
+  defp put_resp(resp, conv), do: Map.put(conv, :resp_body, resp)
+
+  defp get_full_resp(conv, items) do
     items
     |> Enum.join("\n")
     |> put_resp(conv)
   end
 
-  def put_resp(resp, conv), do: Map.put(conv, :resp_body, resp)
+  defp get_item(item, items), do: Enum.at(items, item)
 
-  def get_resp_item(conv, items, item) do
-    item
-    |> String.to_integer()
-    |> Kernel.-(1)
-    |> get_item(conv, items)
-    |> check_resp
-  end
+  defp check_item_name(%{resp_body: nil} = conv),
+    do: %{conv | resp_body: "não encontrado", status: 404}
 
-  def get_item(index, conv, items), do: %{conv | resp_body: Enum.at(items, index)}
+  defp check_item_name(conv), do: conv
 
-  def check_resp(%{resp_body: nil} = conv), do: %{conv | resp_body: "não encontrado"}
-  def check_resp(conv), do: conv
-
-  def format_response(conv) do
+  defp format_response(conv) do
     body = String.replace(conv.resp_body, "\r\n", "\n")
 
     """
-    #{conv.protocol} 200 OK
+    #{conv.protocol} #{conv.status} #{status_reason(conv.status)}
     Content-Type: text/html
-    Content-Length: #{String.length(body)}
+    Content-Length: #{byte_size(body)}
 
     #{body}
     """
+  end
+
+  defp status_reason(code) do
+    %{
+      200 => "OK",
+      201 => "Created",
+      401 => "Unauthorized",
+      403 => "Forbidden",
+      404 => "Not Found",
+      500 => "Internal Server Error"
+    }[code]
   end
 end
