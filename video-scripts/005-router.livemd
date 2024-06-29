@@ -1,4 +1,4 @@
-# ELIXIR - VIDEO - 006
+# ELIXIR - VIDEO - 005
 
 ## Section
 
@@ -23,7 +23,7 @@ g = {:ok, "OK"}
 
 # if (c) do
 #   "verdadeiro"
-# else 
+# else
 #   "falso"
 # end
 
@@ -51,13 +51,13 @@ end
 
 # unless (a) do
 #   "falso"
-# else 
+# else
 #   "verdadeiro"
 # end
 
 # unless (a) do
 #   "a falso"
-# else 
+# else
 #   unless (b) do
 #     "b falso"
 #   else

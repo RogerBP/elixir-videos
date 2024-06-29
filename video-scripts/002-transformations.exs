@@ -1,6 +1,6 @@
 # Run as: iex --dot-iex path/to/notebook.exs
 
-# Title: ELIXIR - VIDEO - 003
+# Title: ELIXIR - VIDEO - 002
 
 # ── Transformações - Extração dos dados ──
 

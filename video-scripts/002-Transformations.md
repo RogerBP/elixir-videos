@@ -1,4 +1,4 @@
-# 003-Transformações
+# 002-Transformações
 
 1. IO.puts
 2. IO.inspect

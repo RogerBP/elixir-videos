@@ -1,4 +1,4 @@
-# 006 - Router
+# 005 - Router
 
 1. Router com if/unless/case/cond
 2. Pattern matching (function clauses)

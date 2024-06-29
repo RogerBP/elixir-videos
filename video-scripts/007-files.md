@@ -1,7 +1,7 @@
-# 008 - ORGANIZÃO DO CÓDIGO
+# 007 - ORGANIZÃO DO CÓDIGO
 
 1. Reescrita do path (books/livros)
 2. Atributos / Constantes
-3. File
+3. Files
 
 https://github.com/RogerBP/elixir-videos

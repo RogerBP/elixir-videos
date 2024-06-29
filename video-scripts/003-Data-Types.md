@@ -1,4 +1,4 @@
-# 004 - Data types
+# 003 - Data types
 
 1. Atom
 2. List

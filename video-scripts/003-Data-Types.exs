@@ -1,6 +1,6 @@
 # Run as: iex --dot-iex path/to/notebook.exs
 
-# Title: ELIXIR - VIDEO - 004 - Atom / List / Tuple / Map
+# Title: ELIXIR - VIDEO - 003 - Atom / List / Tuple / Map
 
 # ── Atom ──
 

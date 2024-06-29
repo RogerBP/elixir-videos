@@ -1,4 +1,4 @@
-# 007 - ORGANIZÃO DO CÓDIGO
+# 006 - ORGANIZÃO DO CÓDIGO
 
 1. Padronização do código
 2. Função privada

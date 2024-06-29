@@ -1,4 +1,4 @@
-# ELIXIR - VIDEO - 003
+# ELIXIR - VIDEO - 002
 
 ## Transformações - Extração dos dados
 
@@ -73,7 +73,7 @@ new_request = String.replace(request, "\r\n", "\n")
 ```
 
 ```elixir
-# Transformar o request normalizado em uma lista 
+# Transformar o request normalizado em uma lista
 lista = String.split(new_request, "\n")
 
 # # Pegar a primeira linha

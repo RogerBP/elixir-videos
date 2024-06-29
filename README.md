@@ -1,15 +1,15 @@
 # Videos
 
-## 001 - Introdução
+## 001 - Introdução / Primeiro projeto
 
-## 002 - Primeiro projeto
+## 002 - Transformações
 
-## 003 - Transformações
+## 003 - Tipos de dados
 
-## 004 - Tipos de dados
+## 004 - Handle
 
-## 005 - Handle
+## 005 - Router
 
-## 006 - Router
+## 006 - Organização do código
 
-## 007 - Organizão do código
+## 007 - Files

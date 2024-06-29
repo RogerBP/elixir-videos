@@ -1,4 +1,4 @@
-# ELIXIR - VIDEO - 004 - Atom / List / Tuple / Map
+# ELIXIR - VIDEO - 003 - Atom / List / Tuple / Map
 
 ## Atom
 

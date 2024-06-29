@@ -1,6 +1,6 @@
 # Run as: iex --dot-iex path/to/notebook.exs
 
-# Title: ELIXIR - VIDEO - 006
+# Title: ELIXIR - VIDEO - 005
 
 # ── Section ──
 
