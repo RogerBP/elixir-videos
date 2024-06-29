@@ -1,4 +1,8 @@
 defmodule Servidor.Handler do
+  def testar do
+    IO.puts(__DIR__)
+  end
+
   def handle(request) do
     request
     |> parse
@@ -37,6 +41,21 @@ defmodule Servidor.Handler do
 
   defp route(%{path: "/board-games/" <> item} = conv),
     do: get_resp_item(conv, Servidor.Api.board_games(), item)
+
+  defp route(%{path: "/about"} = conv) do
+    file_path = Path.expand("../../pages", __DIR__)
+    file_name = Path.join(file_path, "about.html")
+    file_resp = File.read(file_name)
+    {:ok, contents} = file_resp
+
+    # Path.expand("../../pages", __DIR__)
+    # |> Path.join("form.html")
+    # |> File.read
+    # |> handle_file(conv)
+
+    %{conv | resp_body: contents}
+    # %{conv | resp_body: "file not found", status: 404}
+  end
 
   defp route(conv), do: %{conv | resp_body: "não encontrado", status: 404}
 

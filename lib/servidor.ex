@@ -7,6 +7,10 @@ defmodule Servidor do
   @doc """
   Função de teste de request
   """
+  def testar do
+    IO.puts(__DIR__)
+  end
+
   def testar(recurso) do
     exec_request("GET /#{recurso}")
     IO.puts(@server_name)
@@ -25,8 +29,8 @@ defmodule Servidor do
 
     """
 
-    response = Servidor.Handler.handle(request)
     IO.puts(IO.ANSI.clear())
+    response = Servidor.Handler.handle(request)
     IO.puts("==========================================")
     IO.puts(response)
     IO.puts("==========================================")
