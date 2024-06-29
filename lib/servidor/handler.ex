@@ -1,7 +1,5 @@
 defmodule Servidor.Handler do
-  def testar do
-    IO.puts(__DIR__)
-  end
+  @pages_path Path.expand("../../pages", __DIR__)
 
   def handle(request) do
     request
@@ -43,7 +41,7 @@ defmodule Servidor.Handler do
     do: get_resp_item(conv, Servidor.Api.board_games(), item)
 
   defp route(%{path: "/pages/" <> file_name} = conv) do
-    Path.expand("../../pages", __DIR__)
+    @pages_path
     |> Path.join(file_name)
     |> File.read()
     |> handle_file(conv)
