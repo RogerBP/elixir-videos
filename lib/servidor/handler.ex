@@ -42,9 +42,9 @@ defmodule Servidor.Handler do
   defp route(%{path: "/board-games/" <> item} = conv),
     do: get_resp_item(conv, Servidor.Api.board_games(), item)
 
-  defp route(%{path: "/about"} = conv) do
+  defp route(%{path: "/pages/" <> file_name} = conv) do
     Path.expand("../../pages", __DIR__)
-    |> Path.join("about.html")
+    |> Path.join(file_name)
     |> File.read()
     |> handle_file(conv)
   end
