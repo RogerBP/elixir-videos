@@ -43,24 +43,20 @@ defmodule Servidor.Handler do
     do: get_resp_item(conv, Servidor.Api.board_games(), item)
 
   defp route(%{path: "/about"} = conv) do
-    file_path = Path.expand("../../pages", __DIR__)
-    file_name = Path.join(file_path, "about.html")
-    file_resp = File.read(file_name)
-
-    case file_resp do
-      {:ok, contents} -> %{conv | resp_body: contents}
-      {:error, :enoent} -> %{conv | resp_body: "File not found", status: 404}
-      {:error, _reason} -> %{conv | resp_body: "deu zebra", status: 500}
-    end
+    Path.expand("../../pages", __DIR__)
+    |> Path.join("about.html")
+    |> File.read()
+    |> handle_file(conv)
   end
 
-  # Path.expand("../../pages", __DIR__)
-  # |> Path.join("form.html")
-  # |> File.read
-  # |> handle_file(conv)
-  # %{conv | resp_body: "file not found", status: 404}
-
   defp route(conv), do: %{conv | resp_body: "não encontrado", status: 404}
+
+  defp handle_file({:ok, contents}, conv), do: %{conv | resp_body: contents}
+
+  defp handle_file({:error, :enoent}, conv),
+    do: %{conv | resp_body: "File not found", status: 404}
+
+  defp handle_file({:error, _reason}, conv), do: %{conv | resp_body: "deu zebra", status: 500}
 
   defp get_resp_item(conv, items, item) do
     item
