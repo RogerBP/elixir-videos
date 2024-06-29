@@ -46,16 +46,19 @@ defmodule Servidor.Handler do
     file_path = Path.expand("../../pages", __DIR__)
     file_name = Path.join(file_path, "about.html")
     file_resp = File.read(file_name)
-    {:ok, contents} = file_resp
 
-    # Path.expand("../../pages", __DIR__)
-    # |> Path.join("form.html")
-    # |> File.read
-    # |> handle_file(conv)
-
-    %{conv | resp_body: contents}
-    # %{conv | resp_body: "file not found", status: 404}
+    case file_resp do
+      {:ok, contents} -> %{conv | resp_body: contents}
+      {:error, :enoent} -> %{conv | resp_body: "File not found", status: 404}
+      {:error, _reason} -> %{conv | resp_body: "deu zebra", status: 500}
+    end
   end
+
+  # Path.expand("../../pages", __DIR__)
+  # |> Path.join("form.html")
+  # |> File.read
+  # |> handle_file(conv)
+  # %{conv | resp_body: "file not found", status: 404}
 
   defp route(conv), do: %{conv | resp_body: "não encontrado", status: 404}
 
