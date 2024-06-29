@@ -2,6 +2,7 @@ defmodule Servidor.Handler do
   def handle(request) do
     request
     |> parse
+    |> rewrite
     |> route
     |> format_response
   end
@@ -16,6 +17,11 @@ defmodule Servidor.Handler do
 
     %{method: method, path: path, protocol: protocol, resp_body: "", status: 200}
   end
+
+  defp rewrite(%{path: "/livros"} = conv), do: %{conv | path: "/books"}
+  defp rewrite(%{path: "/jogos"} = conv), do: %{conv | path: "/games"}
+  defp rewrite(%{path: "/tabuleiros"} = conv), do: %{conv | path: "/board-games"}
+  defp rewrite(conv), do: conv
 
   defp route(%{path: "/books"} = conv), do: get_full_resp(conv, Servidor.Api.books())
 

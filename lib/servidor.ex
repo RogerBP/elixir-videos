@@ -1,6 +1,15 @@
 defmodule Servidor do
+  @moduledoc """
+  Servidor de testes em Elixir
+  """
+  @server_name "servidor elixir"
+
+  @doc """
+  Função de teste de request
+  """
   def testar(recurso) do
     exec_request("GET /#{recurso}")
+    IO.puts(@server_name)
   end
 
   def testar(recurso, item) do
