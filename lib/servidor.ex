@@ -1,16 +1,9 @@
 defmodule Servidor do
-  @moduledoc """
-  Servidor de testes em Elixir
-  """
+  @moduledoc "Servidor Elixir de Livros / Jogos e Jogos de Tabuleiro"
 
-  # @server_name "servidor elixir"
-
-  @doc """
-  Função de teste de request
-  """
+  @doc "Função de teste de request"
   def testar(recurso) do
     exec_request("GET /#{recurso}")
-    # IO.puts(@server_name)
   end
 
   def testar(recurso, item) do
@@ -31,5 +24,17 @@ defmodule Servidor do
     IO.puts("==========================================")
     IO.puts(response)
     IO.puts("==========================================")
+  end
+
+  @server_name "Servidor Elixir de Livros / Jogos e Jogos de Tabuleiro"
+
+  def constante_a do
+    IO.puts(@server_name)
+  end
+
+  @server_name "Elixir Server of Books / Games e Board-games"
+
+  def constante_b do
+    IO.puts(@server_name)
   end
 end
