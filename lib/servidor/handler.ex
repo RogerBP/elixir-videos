@@ -25,6 +25,13 @@ defmodule Servidor.Handler do
   defp rewrite(%{path: "/tabuleiros"} = conv), do: %{conv | path: "/board-games"}
   defp rewrite(conv), do: conv
 
+  defp route(%{path: "/pages/" <> file_name} = conv) do
+    @pages_path
+    |> Path.join(file_name)
+    |> File.read()
+    |> handle_file(conv)
+  end
+
   defp route(%{path: "/books"} = conv), do: get_full_resp(conv, Servidor.Api.books())
 
   defp route(%{path: "/games"} = conv), do: get_full_resp(conv, Servidor.Api.games())
@@ -39,13 +46,6 @@ defmodule Servidor.Handler do
 
   defp route(%{path: "/board-games/" <> item} = conv),
     do: get_resp_item(conv, Servidor.Api.board_games(), item)
-
-  defp route(%{path: "/pages/" <> file_name} = conv) do
-    @pages_path
-    |> Path.join(file_name)
-    |> File.read()
-    |> handle_file(conv)
-  end
 
   defp route(conv), do: %{conv | resp_body: "não encontrado", status: 404}
 
