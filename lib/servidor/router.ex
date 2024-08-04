@@ -1,5 +1,6 @@
 defmodule Servidor.Router do
   @pages_path Path.expand("../../pages", __DIR__)
+  alias Servidor.Conv
 
   def route(%{path: "/pages/" <> file_name} = conv) do
     @pages_path
@@ -8,17 +9,19 @@ defmodule Servidor.Router do
     |> handle_file(conv)
   end
 
-  def route(%{path: "/books"} = conv), do: get_full_resp(conv, Servidor.Api.books())
-  def route(%{path: "/games"} = conv), do: get_full_resp(conv, Servidor.Api.games())
-  def route(%{path: "/board-games"} = conv), do: get_full_resp(conv, Servidor.Api.board_games())
+  def route(%Conv{path: "/books"} = conv), do: get_full_resp(conv, Servidor.Api.books())
+  def route(%Conv{path: "/games"} = conv), do: get_full_resp(conv, Servidor.Api.games())
 
-  def route(%{path: "/books/" <> item} = conv),
+  def route(%Conv{path: "/board-games"} = conv),
+    do: get_full_resp(conv, Servidor.Api.board_games())
+
+  def route(%Conv{path: "/books/" <> item} = conv),
     do: get_resp_item(conv, Servidor.Api.books(), item)
 
-  def route(%{path: "/games/" <> item} = conv),
+  def route(%Conv{path: "/games/" <> item} = conv),
     do: get_resp_item(conv, Servidor.Api.games(), item)
 
-  def route(%{path: "/board-games/" <> item} = conv),
+  def route(%Conv{path: "/board-games/" <> item} = conv),
     do: get_resp_item(conv, Servidor.Api.board_games(), item)
 
   def route(conv), do: %{conv | resp_body: "não encontrado", status: 404}
@@ -49,7 +52,7 @@ defmodule Servidor.Router do
 
   defp get_item(item, items), do: Enum.at(items, item)
 
-  defp check_item_name(%{resp_body: nil} = conv),
+  defp check_item_name(%Conv{resp_body: nil} = conv),
     do: %{conv | resp_body: "não encontrado", status: 404}
 
   defp check_item_name(conv), do: conv

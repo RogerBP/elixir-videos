@@ -1,4 +1,7 @@
 defmodule Servidor.Plugins do
+  # alias Servidor.Conv, as: Conv
+  alias Servidor.Conv
+
   def parse(request) do
     [method, path, protocol] =
       request
@@ -7,14 +10,15 @@ defmodule Servidor.Plugins do
       |> List.first()
       |> String.split()
 
-    %{method: method, path: path, protocol: protocol, resp_body: "", status: 200}
+    # %Servidor.Conv{method: method, path: path, protocol: protocol, status: 200}
+    %Conv{method: method, path: path, protocol: protocol, status: 200}
   end
 
-  def rewrite(conv), do: Servidor.Rewriter.rewrite(conv)
+  def rewrite(%Conv{} = conv), do: Servidor.Rewriter.rewrite(conv)
 
-  def route(conv), do: Servidor.Router.route(conv)
+  def route(%Conv{} = conv), do: Servidor.Router.route(conv)
 
-  def format_response(conv) do
+  def format_response(%Conv{} = conv) do
     body = String.replace(conv.resp_body, "\r\n", "\n")
 
     """
