@@ -22,22 +22,11 @@ defmodule Servidor.Plugins do
     body = String.replace(conv.resp_body, "\r\n", "\n")
 
     """
-    #{conv.protocol} #{conv.status} #{status_reason(conv.status)}
+    #{Conv.get_full_status(conv)}
     Content-Type: text/html
     Content-Length: #{byte_size(body)}
 
     #{body}
     """
-  end
-
-  def status_reason(code) do
-    %{
-      200 => "OK",
-      201 => "Created",
-      401 => "Unauthorized",
-      403 => "Forbidden",
-      404 => "Not Found",
-      500 => "Internal Server Error"
-    }[code]
   end
 end
