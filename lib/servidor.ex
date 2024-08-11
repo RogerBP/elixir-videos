@@ -2,21 +2,26 @@ defmodule Servidor do
   @moduledoc "Servidor Elixir de Livros / Jogos e Jogos de Tabuleiro"
 
   @doc "Função de teste de request"
-  def testar(recurso) do
+  def get(recurso) do
     exec_request("GET /#{recurso}")
   end
 
-  def testar(recurso, item) do
+  def get(recurso, item) do
     exec_request("GET /#{recurso}/#{item}")
   end
 
-  defp exec_request(comando) do
+  def post() do
+    exec_request("POST /books", "name=Os primeiros casos de Poirot&author=Agatha Christie")
+  end
+
+  defp exec_request(comando, body \\ "") do
     request = """
     #{comando} HTTP/1.1
     Host: sabecontar.com
     User-Agent: Browser/1.0
     Accept: */*
 
+    #{body}
     """
 
     IO.puts(IO.ANSI.clear())

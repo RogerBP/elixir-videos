@@ -9,7 +9,14 @@ defmodule Servidor.Router do
     |> handle_file(conv)
   end
 
-  def route(%Conv{path: "/books"} = conv), do: get_full_resp(conv, Servidor.Api.books())
+  def route(%Conv{path: "/books", method: "GET"} = conv),
+    do: get_full_resp(conv, Servidor.Api.books())
+
+  def route(%Conv{path: "/books", method: "POST"} = conv) do
+    IO.inspect(conv)
+    # Map.put(conv, :resp_body, "POST BOOK")
+  end
+
   def route(%Conv{path: "/games"} = conv), do: get_full_resp(conv, Servidor.Api.games())
 
   def route(%Conv{path: "/board-games"} = conv),
