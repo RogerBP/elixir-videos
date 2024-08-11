@@ -1,5 +1,13 @@
 defmodule Servidor.Conv do
-  defstruct method: "", path: "", protocol: "", resp_body: "", status: nil, params: nil
+  # defstruct method: "", path: "", protocol: "", resp_body: "", status: nil
+  # defstruct method: "", path: "", protocol: "", resp_body: "", status: nil, params: nil
+  defstruct method: "",
+            path: "",
+            protocol: "",
+            resp_body: "",
+            status: nil,
+            params: nil,
+            headers: nil
 
   def get_full_status(%Servidor.Conv{} = conv),
     do: "#{conv.protocol} #{conv.status} #{status_reason(conv.status)}"
