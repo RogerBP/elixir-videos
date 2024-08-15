@@ -20,6 +20,8 @@ defmodule Servidor do
     Host: sabecontar.com
     User-Agent: Browser/1.0
     Accept: */*
+    Content-Type: application/x-www-form-urlencoded
+    Content-Length: #{byte_size(body)}
 
     #{body}
     """
