@@ -1,5 +1,6 @@
 defmodule Servidor.Router do
   @pages_path Path.expand("../../pages", __DIR__)
+  alias Servidor.BooksController
   alias Servidor.Conv
 
   def route(%{path: "/pages/" <> file_name} = conv) do
@@ -10,7 +11,10 @@ defmodule Servidor.Router do
   end
 
   def route(%Conv{path: "/books", method: "GET"} = conv),
-    do: get_full_resp(conv, Servidor.Api.books())
+    do: BooksController.index(conv)
+
+  # def route(%Conv{path: "/books/" <> item} = conv),
+  #   do: get_resp_item(conv, Servidor.Api.books(), item)
 
   def route(%Conv{path: "/books", method: "POST"} = conv) do
     IO.inspect(conv)
@@ -23,9 +27,6 @@ defmodule Servidor.Router do
 
   def route(%Conv{path: "/board-games"} = conv),
     do: get_full_resp(conv, Servidor.Api.board_games())
-
-  def route(%Conv{path: "/books/" <> item} = conv),
-    do: get_resp_item(conv, Servidor.Api.books(), item)
 
   def route(%Conv{path: "/games/" <> item} = conv),
     do: get_resp_item(conv, Servidor.Api.games(), item)
