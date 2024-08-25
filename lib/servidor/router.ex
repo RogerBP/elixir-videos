@@ -13,8 +13,8 @@ defmodule Servidor.Router do
   def route(%Conv{path: "/books", method: "GET"} = conv),
     do: BooksController.index(conv)
 
-  # def route(%Conv{path: "/books/" <> item} = conv),
-  #   do: get_resp_item(conv, Servidor.Api.books(), item)
+  def route(%Conv{path: "/books/" <> item} = conv),
+    do: BooksController.show(conv, item)
 
   def route(%Conv{path: "/books", method: "POST"} = conv) do
     IO.inspect(conv)

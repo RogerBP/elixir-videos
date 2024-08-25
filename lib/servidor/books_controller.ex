@@ -3,16 +3,11 @@ defmodule Servidor.BooksController do
   alias Servidor.BooksApi
 
   def index(conv) do
-    books = BooksApi.books()
-    # books = Enum.sort(books, fn a, b -> a.title < b.title end)
-    books = Enum.sort(books, &(&1.title < &2.title))
-    # books = Enum.sort(books, &(&1.id < &2.id))
-
-    # items = Enum.map(books, fn book -> book_item(book) end)
-    # items = Enum.map(books, &book_item(&1))
-    books = Enum.map(books, &book_item/1)
-
-    books = Enum.join(books)
+    books =
+      BooksApi.books()
+      |> Enum.sort(&(&1.title < &2.title))
+      |> Enum.map(&book_item/1)
+      |> Enum.join()
 
     resp =
       """
@@ -30,5 +25,13 @@ defmodule Servidor.BooksController do
   end
 
   # show (mostra um)
+  def show(conv, item) do
+    IO.puts("conv: #{inspect(conv)} / item: #{item}")
+
+    book = BooksApi.get_book(item)
+    resp = "<div>Id: #{book.id}/ Título: #{book.title}/ Autor: #{book.author}</div>"
+    %{conv | status: 200, resp_body: resp}
+  end
+
   # create (adicionar)
 end
