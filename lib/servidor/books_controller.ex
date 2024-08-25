@@ -24,7 +24,6 @@ defmodule Servidor.BooksController do
     "\n<li>Id: #{book.id}/ Título: #{book.title}/ Autor: #{book.author}</li>"
   end
 
-  # show (mostra um)
   def show(conv, item) do
     IO.puts("conv: #{inspect(conv)} / item: #{item}")
 
@@ -33,5 +32,9 @@ defmodule Servidor.BooksController do
     %{conv | status: 200, resp_body: resp}
   end
 
-  # create (adicionar)
+  def create(conv) do
+    IO.inspect(conv)
+    resp = "Novo livro: #{conv.params["name"]} - #{conv.params["author"]}"
+    %{conv | status: 200, resp_body: resp}
+  end
 end

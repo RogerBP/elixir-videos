@@ -16,12 +16,8 @@ defmodule Servidor.Router do
   def route(%Conv{path: "/books/" <> item} = conv),
     do: BooksController.show(conv, item)
 
-  def route(%Conv{path: "/books", method: "POST"} = conv) do
-    IO.inspect(conv)
-    resp = "Novo livro: #{conv.params["name"]} - #{conv.params["author"]}"
-
-    Map.put(conv, :resp_body, resp)
-  end
+  def route(%Conv{path: "/books", method: "POST"} = conv),
+    do: BooksController.create(conv)
 
   def route(%Conv{path: "/games"} = conv), do: get_full_resp(conv, Servidor.Api.games())
 
