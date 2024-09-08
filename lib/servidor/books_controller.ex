@@ -26,13 +26,14 @@ defmodule Servidor.BooksController do
   end
 
   def show(conv, item) do
-    book = BooksApi.get_book(item)
-    render(conv, "books_show.eex", book: book)
+    render(conv, "books_show.eex", book: BooksApi.get_book(item))
   end
 
   def render(conv, template, bindings) do
-    file = Path.join(@templates_path, template)
-    resp = EEx.eval_file(file, bindings)
+    resp =
+      Path.join(@templates_path, template)
+      |> EEx.eval_file(bindings)
+
     %{conv | status: 200, resp_body: resp}
   end
 
@@ -41,7 +42,6 @@ defmodule Servidor.BooksController do
   end
 
   def create(conv) do
-    IO.inspect(conv)
     resp = "Novo livro: #{conv.params["name"]} - #{conv.params["author"]}"
     %{conv | status: 200, resp_body: resp}
   end
