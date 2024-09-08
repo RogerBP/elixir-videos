@@ -1,0 +1,4 @@
+<h1>Meus Livros</h1>
+<%= for book <- books do %>
+  <%= Servidor.BooksController.book_item(book) %>
+<% end %>

@@ -1,7 +1,8 @@
 defmodule Servidor.Router do
-  @pages_path Path.expand("../../pages", __DIR__)
   alias Servidor.BooksController
   alias Servidor.Conv
+
+  @pages_path Path.expand("../../pages", __DIR__)
 
   def route(%{path: "/pages/" <> file_name} = conv) do
     @pages_path
