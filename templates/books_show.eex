@@ -1,0 +1,3 @@
+<div>
+  Id: <%= book.id %> / Título: <%= book.title %> / Autor: <%= book.author %>
+</div>

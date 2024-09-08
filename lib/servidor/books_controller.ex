@@ -33,10 +33,9 @@ defmodule Servidor.BooksController do
   end
 
   def show(conv, item) do
-    IO.puts("conv: #{inspect(conv)} / item: #{item}")
-
     book = BooksApi.get_book(item)
-    resp = "<div>Id: #{book.id}/ Título: #{book.title}/ Autor: #{book.author}</div>"
+    books_show = Path.join(@templates_path, "books_show.eex")
+    resp = EEx.eval_file(books_show, book: book)
     %{conv | status: 200, resp_body: resp}
   end
 
