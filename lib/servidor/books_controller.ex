@@ -2,7 +2,7 @@ defmodule Servidor.BooksController do
   alias Servidor.Book
   alias Servidor.BooksApi
 
-  # @templates_path Path.expand("../../templates", __DIR__)
+  @templates_path Path.expand("../../templates", __DIR__)
 
   def index(conv) do
     books =
@@ -12,18 +12,18 @@ defmodule Servidor.BooksController do
     # |> Enum.map(&book_item/1)
     # |> Enum.join()
 
-    html = """
-    <h1>Meus livros</h1>
-    <ul><%= for book <- books, book.author == "Stephen King" do %>
-    <%= Servidor.BooksController.book_item(book) %>
-    <% end %>
-    </ul>
-    """
+    # html = """
+    # <h1>Meus livros</h1>
+    # <ul><%= for book <- books, book.author == "Stephen King" do %>
+    # <%= Servidor.BooksController.book_item(book) %>
+    # <% end %>
+    # </ul>
+    # """
 
-    resp = EEx.eval_string(html, books: books)
+    # resp = EEx.eval_string(html, books: books)
 
-    # books_index = Path.join(@templates_path, "books_index.eex")
-    # resp = EEx.eval_file(books_index, books: books)
+    books_index = Path.join(@templates_path, "books_index.eex")
+    resp = EEx.eval_file(books_index, books: books)
 
     %{conv | status: 200, resp_body: resp}
   end
