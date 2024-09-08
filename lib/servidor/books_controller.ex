@@ -22,21 +22,22 @@ defmodule Servidor.BooksController do
 
     # resp = EEx.eval_string(html, books: books)
 
-    books_index = Path.join(@templates_path, "books_index.eex")
-    resp = EEx.eval_file(books_index, books: books)
+    render(conv, "books_index.eex", books: books)
+  end
 
+  def show(conv, item) do
+    book = BooksApi.get_book(item)
+    render(conv, "books_show.eex", book: book)
+  end
+
+  def render(conv, template, bindings) do
+    file = Path.join(@templates_path, template)
+    resp = EEx.eval_file(file, bindings)
     %{conv | status: 200, resp_body: resp}
   end
 
   def book_item(%Book{} = book) do
     "\n<li>Id: #{book.id}/ Título: #{book.title}/ Autor: #{book.author}</li>"
-  end
-
-  def show(conv, item) do
-    book = BooksApi.get_book(item)
-    books_show = Path.join(@templates_path, "books_show.eex")
-    resp = EEx.eval_file(books_show, book: book)
-    %{conv | status: 200, resp_body: resp}
   end
 
   def create(conv) do
