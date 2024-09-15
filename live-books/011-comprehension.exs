@@ -1,0 +1,352 @@
+# Run as: iex --dot-iex path/to/notebook.exs
+
+# Title: ELIXIR-VIDEO-11
+
+# ── Books ──
+
+defmodule Servidor.Book do
+  defstruct id: 0, title: "", author: "", year: 0, pages: 0
+end
+
+defmodule Servidor.BooksApi do
+  alias Servidor.Book
+
+  def books do
+    [
+      %Book{
+        id: 1,
+        title: "O homem que calculava",
+        author: "Malba Tahan",
+        year: 1993,
+        pages: 250
+      },
+      %Book{
+        id: 2,
+        title: "A arte de ser um perfeito mau professor",
+        author: "Malba Tahan",
+        year: 1967,
+        pages: 122
+      },
+      %Book{
+        id: 3,
+        title: "Acordaram-me de madrugada",
+        author: "Malba Tahan",
+        year: 1973,
+        pages: 318
+      },
+      %Book{
+        id: 4,
+        title: "Antologia da matemática",
+        author: "Malba Tahan",
+        year: 1960,
+        pages: nil
+      },
+      %Book{
+        id: 5,
+        title: "Belezas e maravilhas do céu",
+        author: "Malba Tahan",
+        year: 1974,
+        pages: 205
+      },
+      %Book{
+        id: 6,
+        title: "Didática da matemática",
+        author: "Malba Tahan",
+        year: 1961,
+        pages: nil
+      },
+      %Book{
+        id: 7,
+        title: "A lógica na matemática",
+        author: "Malba Tahan",
+        year: 1966,
+        pages: 183
+      },
+      %Book{
+        id: 8,
+        title: "Matematica, Curiosa y Divertida",
+        author: "Malba Tahan",
+        year: 2006,
+        pages: nil
+      },
+      %Book{
+        id: 9,
+        title: "Matemática divertida e delirante",
+        author: "Malba Tahan",
+        year: 1962,
+        pages: 266
+      },
+      %Book{
+        id: 10,
+        title: "A matemática na lenda e na história",
+        author: "Malba Tahan",
+        year: 1974,
+        pages: 225
+      },
+      %Book{
+        id: 11,
+        title: "The Lord of the Rings",
+        author: "J.R.R. Tolkien",
+        year: 1954,
+        pages: 1193
+      },
+      %Book{
+        id: 12,
+        title: "The fellowship of the ring",
+        author: "J.R.R. Tolkien",
+        year: 1954,
+        pages: 498
+      },
+      %Book{
+        id: 13,
+        title: "The Two Towers",
+        author: "J.R.R. Tolkien",
+        year: 1954,
+        pages: 438
+      },
+      %Book{
+        id: 14,
+        title: "The Hobbit",
+        author: "J.R.R. Tolkien",
+        year: 1937,
+        pages: 310
+      },
+      %Book{
+        id: 15,
+        title: "The Return of the King",
+        author: "J.R.R. Tolkien",
+        year: 1950,
+        pages: 500
+      },
+      %Book{
+        id: 16,
+        title: "Novels (Hobbit / Lord of the Rings)",
+        author: "J.R.R. Tolkien",
+        year: 1979,
+        pages: 1601
+      },
+      %Book{
+        id: 17,
+        title: "The Silmarillion",
+        author: "J.R.R. Tolkien",
+        year: 1977,
+        pages: 432
+      },
+      %Book{
+        id: 18,
+        title: "Insomnia",
+        author: "Stephen King",
+        year: 1994,
+        pages: 740
+      },
+      %Book{
+        id: 19,
+        title: "The Hobbit",
+        author: "Charles Dixon",
+        year: 1990,
+        pages: 144
+      },
+      %Book{
+        id: 20,
+        title: "The Children of Húrin",
+        author: "J.R.R. Tolkien",
+        year: 2001,
+        pages: 313
+      },
+      %Book{
+        id: 21,
+        title: "And Then There Were None",
+        author: "Agatha Christie",
+        year: 1939,
+        pages: 240
+      },
+      %Book{
+        id: 22,
+        title: "Murder on the Orient Express",
+        author: "Agatha Christie",
+        year: 1933,
+        pages: 253
+      },
+      %Book{
+        id: 23,
+        title: "The Murder of Roger Ackroyd",
+        author: "Agatha Christie",
+        year: 1926,
+        pages: 256
+      },
+      %Book{
+        id: 24,
+        title: "The A.B.C. Murders",
+        author: "Agatha Christie",
+        year: 1936,
+        pages: 232
+      },
+      %Book{
+        id: 25,
+        title: "Curtain",
+        author: "Agatha Christie",
+        year: 1975,
+        pages: 238
+      },
+      %Book{
+        id: 26,
+        title: "Insomnia",
+        author: "Stephen King",
+        year: 1994,
+        pages: 740
+      },
+      %Book{
+        id: 27,
+        title: "The Bachman Books (Long Walk / Rage / Roadwork / Running Man)",
+        author: "Stephen King",
+        year: 1985,
+        pages: 880
+      },
+      %Book{
+        id: 28,
+        title: "The Murder at the Vicarage",
+        author: "Agatha Christie",
+        year: 1930,
+        pages: 253
+      },
+      %Book{
+        id: 29,
+        title: "The Mysterious Affair at Styles",
+        author: "Agatha Christie",
+        year: 1920,
+        pages: 222
+      },
+      %Book{
+        id: 30,
+        title: "The Big Four",
+        author: "Agatha Christie",
+        year: 1927,
+        pages: 224
+      }
+    ]
+  end
+end
+
+defmodule Servidor.BooksController do
+  def book_item(book) do
+    "\n<li>Id: #{book.id}/ Título: #{book.title}/ Autor: #{book.author}</li>"
+  end
+end
+
+# ── Comprehension ──
+
+# numeros = [1, 2, 3, 4, 5]
+# letras = ["a", "b", "c"]
+
+# for x <- numeros, y <- numeros, z <- letras do
+#   {x , y, z}
+# end
+
+books = Servidor.BooksApi.books()
+
+# for book <- books, do: book.title
+# for book <- books, do: {book.title, book.author}
+# for book <- books, do: %{title: book.title, author: book.author}
+
+# ── Comprehension / pattern matching ──
+
+# for %{author: "J.R.R. Tolkien"} = book <- books do
+#   %{t: book.title, a: book.author}
+# end
+
+# for %{author: "Agatha Christie"} = book <- books, do: %{t: book.title, a: book.author}
+for %{author: "Malba Tahan", title: title} = _book <- books,   do: %{t: title}
+
+# ── Comprehension / filter ──
+
+# Enum.filter(books, fn book -> book.id == 1 end)
+# for book <- books, book.id == 1, do: %{t: book.title}
+for book <- books, book.author == "Stephen King", do: %{t: book.title}
+
+# ── Comprehension / filter function ──
+
+sk? = fn author -> author == "Stephen King" end
+ac? = fn author -> author == "Agatha Christie" end
+mt? = fn author -> author == "Malba Tahan" end
+jk? = fn author -> author == "J.R.R. Tolkien" end
+
+# for book <- books, sk?.(book.author), do: %{a: book.author, t: book.title}
+# for book <- books, ac?.(book.author), do: %{a: book.author, t: book.title}
+# for book <- books, mt?.(book.author), do: %{a: book.author, t: book.title}
+# for book <- books, jk?.(book.author), do: %{a: book.author, t: book.title}
+
+# for book <- books, jk?.(book.author) || mt?.(book.author), do: %{a: book.author, t: book.title}
+# for book <- books, !jk?.(book.author), do: %{a: book.author, t: book.title}
+
+# ── EEx ──
+
+# EEx.eval_string "Hi, <%= @name %>", assigns: [name: "Roger"]
+html = "<h1>Os livros do <%= @name %> (<%= 10 + 20 %>)</h1>"
+EEx.eval_string html, assigns: [name: "Roger"]
+
+# ── EEx / inspect ──
+
+html = """
+<h1>Os livros do <%= @name %></h1>
+<%= inspect(@books) %>
+"""
+
+result = EEx.eval_string(html, assigns: [name: "Roger", books: books])
+IO.puts(result)
+
+
+# ── EEx / comprehension ──
+
+html = """
+<h1>Os livros do <%= @name %></h1>
+<%= for book <- @books do %>
+  <div><%= book.author %> / <%= book.title %></div>
+<% end %>
+<footer>by Elixir</footer>
+"""
+
+result = EEx.eval_string(html, assigns: [name: "João", books: books])
+IO.puts(result)
+
+# ── EEx / comprehension com filtro ──
+
+html = """
+<h1>Os livros do <%= @name %></h1>
+<h1>Autor: <%= @autor %></h1>
+<%= for book <- @books, book.author == @autor do %>
+  <div><%= book.title %></div>
+<% end %>
+"""
+
+result =
+  EEx.eval_string(html,
+    assigns: [
+      name: "Roger",
+      autor: "Malba Tahan",
+      books: books
+    ]
+  )
+
+IO.puts(result)
+
+# ── EEx / com função externa ──
+
+# usando função externa
+html = """
+<h1>Os livros do <%= @name %></h1>
+<h1>Autor: <%= @autor %></h1>
+<%= for book <- @books, book.author == @autor do %>
+  <%= Servidor.BooksController.book_item(book) %>
+<% end %>
+"""
+
+result =
+  EEx.eval_string(html,
+    assigns: [
+      name: "Roger",
+      autor: "Malba Tahan",
+      books: books
+    ]
+  )
+
+IO.puts(result)

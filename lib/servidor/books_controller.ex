@@ -29,10 +29,10 @@ defmodule Servidor.BooksController do
     render(conv, "books_show.eex", book: BooksApi.get_book(item))
   end
 
-  def render(conv, template, bindings) do
+  def render(conv, template, dados) do
     resp =
       Path.join(@templates_path, template)
-      |> EEx.eval_file(bindings)
+      |> EEx.eval_file(dados)
 
     %{conv | status: 200, resp_body: resp}
   end
