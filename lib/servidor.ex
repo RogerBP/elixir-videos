@@ -44,4 +44,47 @@ defmodule Servidor do
   def constante_b do
     IO.puts(@server_name)
   end
+
+  # O servidor abre uma porta
+  #   - cria um socket e fica aguardando (escutando) por um client
+  #   - neste caso o clien será o browser
+  # O client (browser) envia uma requisição de conexão
+  # O servidor aceita a requisição e cria um client socket
+  # O cliente (browser) usa o client socket para enviar uma requisição http
+  # O servidor aceita a requisição, processa e envia uma resposta pelo mesmo client socket
+  # O servidor fecha o client socket e agaurda uma nova requisição
+
+  # Erlang / OTP - Open Telecon Platform
+  # Módulo: gen_tcp
+
+  # Conversão / Transcodificação
+  # Erlang                          ====> Elixir
+  # fn() ->   (função)              ====> def fn do
+  # lowercase (ok)                  ====> atoms (:ok)
+  # uppercase (LSock)               ====> var (lsoc)
+  # módulos   (gen_tcp)             ====> adicionar ":" (:gen_tcp)
+  # gen_tcp:listen (função)         ====> :gen_tcp.listen
+  # lista de tuplas                 ====> keywordlist
+  #    {packet, 0}, {active, false} ====> {:packet, 0}, {:active, false}
+  #                                 ====> packet: 0, active: false
+  # linhas terminam com ","         ====> remover
+  # funções terminam com "."        ====> end
+
+  #   server() ->
+  #     {ok, LSock} = gen_tcp:listen(5678, [binary, {packet, 0},
+  #                                         {active, false}]),
+  #     {ok, Sock} = gen_tcp:accept(LSock),
+  #     {ok, Bin} = do_recv(Sock, []),  =====> :gen_tcp.recv(sock, 0)
+  #     ok = gen_tcp:close(Sock),
+  #     ok = gen_tcp:close(LSock),
+  #     Bin.
+
+  def server do
+    {:ok, lsock} = :gen_tcp.listen(5678, [:binary, packet: 0, active: false])
+    {:ok, sock} = :gen_tcp.accept(lsock)
+    {:ok, bin} = :gen_tcp.recv(sock, 0)
+    :ok = :gen_tcp.close(sock)
+    :ok = :gen_tcp.close(lsock)
+    IO.puts(bin)
+  end
 end
