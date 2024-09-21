@@ -80,11 +80,58 @@ defmodule Servidor do
   #     Bin.
 
   def server do
-    {:ok, lsock} = :gen_tcp.listen(5678, [:binary, packet: 0, active: false])
-    {:ok, sock} = :gen_tcp.accept(lsock)
-    {:ok, bin} = :gen_tcp.recv(sock, 0)
-    :ok = :gen_tcp.close(sock)
-    :ok = :gen_tcp.close(lsock)
-    IO.puts(bin)
+    port = 5678
+    IO.puts("escutando na porta #{port} ...")
+
+    {:ok, listen_socket} =
+      :gen_tcp.listen(port, [:binary, packet: :raw, active: false, reuseaddr: true])
+
+    # `:binary` - os dados serão tratados como binaries
+    # `packet: :raw` - os dados não devem fornecidos totalmente sem manipulação de pacotes
+    # `active: false` - os dados serão recebidos na chamada da função `:gen_tcp.recv/2`
+    # `reuseaddr: true` - permite a reutilizaçào de endereço caso dê alguma zebra
+
+    IO.puts("aguardando requisição ... ")
+
+    {:ok, client_socket} = :gen_tcp.accept(listen_socket)
+
+    IO.puts("recebendo requisição ... ")
+
+    {:ok, request} = :gen_tcp.recv(client_socket, 0)
+
+    IO.puts(request)
+
+    body = """
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Document</title>
+    </head>
+    <body>
+        Bem vindo ao meu SITE
+    </body>
+    </html>
+    """
+
+    resp = """
+    HTTP/1.1 200 OK
+    Content-Type: text/html
+    Content-Length: #{byte_size(body)}
+
+    #{body}
+    """
+
+    IO.puts("enviando resposta... \n#{resp} ")
+
+    :ok = :gen_tcp.send(client_socket, resp)
+
+    IO.puts("fechando socket... ")
+
+    :ok = :gen_tcp.close(client_socket)
+    :ok = :gen_tcp.close(listen_socket)
+
+    IO.puts("terminado.")
   end
 end
