@@ -4,6 +4,8 @@ defmodule Servidor.Router do
 
   @pages_path Path.expand("../../pages", __DIR__)
 
+  def route(%{path: "/"} = conv), do: %{conv | resp_body: "Minha biblioteca", status: 200}
+
   def route(%{path: "/pages/" <> file_name} = conv) do
     @pages_path
     |> Path.join(file_name)

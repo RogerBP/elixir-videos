@@ -8,51 +8,67 @@ defmodule Servidor.HttpServer do
     accept_connection(listen_socket)
   end
 
-  def accept_connection(listen_socket) do
+  defp accept_connection(listen_socket) do
     IO.puts("===> 🌎 <=== Aguardando conexão ... \n")
 
     {:ok, client_socket} = :gen_tcp.accept(listen_socket)
 
     IO.puts("===> ✨ <=== Conectado ... \n")
 
+    serve(client_socket)
+
+    IO.puts("===> 🚫 <=== Fechando socket... \n")
+
+    :ok = :gen_tcp.close(client_socket)
+
+    accept_connection(listen_socket)
+  end
+
+  defp serve(client_socket) do
+    request = get_request(client_socket)
+    resp = get_resp(request)
+    send_response(resp, client_socket)
+  end
+
+  defp send_response(resp, client_socket) do
+    IO.puts("===> 📜 <=== Enviando resposta... \n#{resp} \n")
+    :ok = :gen_tcp.send(client_socket, resp)
+  end
+
+  defp get_resp(request) do
+    Servidor.Handler.handle(request)
+
+    # body = """
+    # <!DOCTYPE html>
+    # <html lang="en">
+    # <head>
+    #   <meta charset="UTF-8">
+    #   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    #   <title>Document</title>
+    # </head>
+    # <body>
+    #     Bem vindo ao meu SITE
+    # </body>
+    # </html>
+    # """
+
+    # """
+    # HTTP/1.1 200 OK
+    # Content-Type: text/html
+    # Content-Length: #{byte_size(body)}
+
+    # #{body}
+    # """
+  end
+
+  defp get_request(client_socket) do
     {:ok, request} = :gen_tcp.recv(client_socket, 0)
 
     IO.puts("===> 📃 <=== Requisição recebida ... \n")
     IO.puts(request)
     IO.puts("\n================================= \n")
 
-    body = """
-    <!DOCTYPE html>
-    <html lang="en">
-    <head>
-      <meta charset="UTF-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>Document</title>
-    </head>
-    <body>
-        Bem vindo ao meu SITE
-    </body>
-    </html>
-    """
-
-    resp = """
-    HTTP/1.1 200 OK
-    Content-Type: text/html
-    Content-Length: #{byte_size(body)}
-
-    #{body}
-    """
-
-    IO.puts("===> 📜 <=== Enviando resposta... \n#{resp} \n")
-
-    :ok = :gen_tcp.send(client_socket, resp)
-
-    IO.puts("===> 🚫 <=== Fechando socket... \n")
-
-    :ok = :gen_tcp.close(client_socket)
-    # :ok = :gen_tcp.close(listen_socket)
-
-    accept_connection(listen_socket)
+    request
   end
 end
 
@@ -95,3 +111,5 @@ end
 #     ok = gen_tcp:close(Sock),
 #     ok = gen_tcp:close(LSock),
 #     Bin.
+
+#  Servidor.HttpServer.start(2000)

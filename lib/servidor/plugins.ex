@@ -9,7 +9,19 @@ defmodule Servidor.Plugins do
   def route(%Conv{} = conv), do: Servidor.Router.route(conv)
 
   def format_response(%Conv{} = conv) do
-    body = String.replace(conv.resp_body, "\r\n", "\n")
+    body = """
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Document</title>
+    </head>
+    <body>
+        #{String.replace(conv.resp_body, "\r\n", "\n")}
+    </body>
+    </html>
+    """
 
     """
     #{Conv.get_full_status(conv)}
