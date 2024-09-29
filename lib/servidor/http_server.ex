@@ -74,16 +74,16 @@ end
 
 # socket options :
 # `:binary` - os dados serão tratados como binaries
-# `packet: :raw` - os dados não devem fornecidos totalmente sem manipulação de pacotes
+# `packet: :raw` - os dados nos devem fornecidos totalmente sem manipulação de pacotes
 # `active: false` - os dados serão recebidos na chamada da função `:gen_tcp.recv/2`
 # `reuseaddr: true` - permite a reutilizaçào de endereço caso dê alguma zebra
 
 # O servidor abre uma porta
 #   - cria um socket e fica aguardando (escutando) por um client
-#   - neste caso o clien será o browser
+#   - no nosso caso o client será o browser
 # O client (browser) envia uma requisição de conexão
 # O servidor aceita a requisição e cria um client socket
-# O cliente (browser) usa o client socket para enviar uma requisição http
+# O client (browser) usa o client socket para enviar uma requisição http
 # O servidor aceita a requisição, processa e envia uma resposta pelo mesmo client socket
 # O servidor fecha o client socket e agaurda uma nova requisição
 
