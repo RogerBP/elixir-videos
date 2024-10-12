@@ -4,7 +4,25 @@ defmodule Servidor.Router do
 
   @pages_path Path.expand("../../pages", __DIR__)
 
-  def route(%{path: "/"} = conv), do: %{conv | resp_body: "Minha biblioteca", status: 200}
+  def route(%{path: "/"} = conv) do
+    dataStr =
+      Time.utc_now()
+      |> Time.truncate(:second)
+      |> Time.to_string()
+
+    %{conv | resp_body: "#{dataStr} Minha biblioteca", status: 200}
+  end
+
+  def route(%{path: "/zebra"}) do
+    raise "... deu zebra ..."
+  end
+
+  def route(%{path: "/timer/" <> time} = conv) do
+    String.to_integer(time)
+    |> :timer.sleep()
+
+    %{conv | resp_body: "Dormindo por #{time} ms"}
+  end
 
   def route(%{path: "/pages/" <> file_name} = conv) do
     @pages_path

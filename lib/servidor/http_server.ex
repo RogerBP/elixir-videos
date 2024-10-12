@@ -5,7 +5,16 @@ defmodule Servidor.HttpServer do
     {:ok, listen_socket} =
       :gen_tcp.listen(port, [:binary, packet: :raw, active: false, reuseaddr: true])
 
-    accept_connection(listen_socket)
+    try do
+      accept_connection(listen_socket)
+    rescue
+      e in RuntimeError -> tratar_erro(listen_socket, e)
+    end
+  end
+
+  defp tratar_erro(listen_socket, error) do
+    :ok = :gen_tcp.close(listen_socket)
+    raise error
   end
 
   defp accept_connection(listen_socket) do
