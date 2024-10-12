@@ -1,35 +1,28 @@
 defmodule Servidor.HttpServer do
   def start(port) when port > 1023 do
-    IO.puts("===> 🎧 ===> Escutando na porta #{port} ...\n")
+    log("🎧 ===> Escutando na porta #{port} ...")
 
     {:ok, listen_socket} =
       :gen_tcp.listen(port, [:binary, packet: :raw, active: false, reuseaddr: true])
 
-    try do
-      accept_connection(listen_socket)
-    rescue
-      e in RuntimeError -> tratar_erro(listen_socket, e)
-    end
+    accept_connection(listen_socket)
+    # try do
+    #   accept_connection(listen_socket)
+    # rescue
+    #   e in RuntimeError -> tratar_erro(listen_socket, e)
+    # end
   end
 
-  defp tratar_erro(listen_socket, error) do
-    :ok = :gen_tcp.close(listen_socket)
-    raise error
-  end
+  # defp tratar_erro(listen_socket, error) do
+  #   :ok = :gen_tcp.close(listen_socket)
+  #   raise error
+  # end
 
   defp accept_connection(listen_socket) do
-    IO.puts("===> 🌎 <=== Aguardando conexão ... \n")
-
+    log("🌎 <=== Aguardando conexão ...")
     {:ok, client_socket} = :gen_tcp.accept(listen_socket)
-
-    IO.puts("===> ✨ <=== Conectado ... \n")
-
-    serve(client_socket)
-
-    IO.puts("===> 🚫 <=== Fechando socket... \n")
-
-    :ok = :gen_tcp.close(client_socket)
-
+    log("✨ <=== Conectado ...")
+    spawn(fn -> serve(client_socket) end)
     accept_connection(listen_socket)
   end
 
@@ -37,48 +30,44 @@ defmodule Servidor.HttpServer do
     request = get_request(client_socket)
     resp = get_resp(request)
     send_response(resp, client_socket)
+    close_socket(client_socket)
   end
 
   defp send_response(resp, client_socket) do
-    IO.puts("===> 📜 <=== Enviando resposta... \n#{resp} \n")
+    log("📜 <=== Enviando resposta... ")
     :ok = :gen_tcp.send(client_socket, resp)
+  end
+
+  defp close_socket(client_socket) do
+    log("🚫 <=== Fechando socket... ")
+    :ok = :gen_tcp.close(client_socket)
   end
 
   defp get_resp(request) do
     Servidor.Handler.handle(request)
-
-    # body = """
-    # <!DOCTYPE html>
-    # <html lang="en">
-    # <head>
-    #   <meta charset="UTF-8">
-    #   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    #   <title>Document</title>
-    # </head>
-    # <body>
-    #     Bem vindo ao meu SITE
-    # </body>
-    # </html>
-    # """
-
-    # """
-    # HTTP/1.1 200 OK
-    # Content-Type: text/html
-    # Content-Length: #{byte_size(body)}
-
-    # #{body}
-    # """
   end
 
   defp get_request(client_socket) do
-    {:ok, request} = :gen_tcp.recv(client_socket, 0)
+    log("📃 <=== Aguardando Requisição ...")
 
-    IO.puts("===> 📃 <=== Requisição recebida ... \n")
-    IO.puts(request)
-    IO.puts("\n================================= \n")
+    :gen_tcp.recv(client_socket, 0)
+    |> tratar_request()
+  end
 
+  defp tratar_request({:ok, request}) do
+    linha = get_first_line(request)
+    log("📃 <=== Requisição recebida: #{linha}")
     request
   end
+
+  defp tratar_request({:error, :closed}), do: "Erro no recebimento do request"
+
+  defp get_first_line(request) do
+    [linha | _] = String.split(request, "\n")
+    linha
+  end
+
+  defp log(msg), do: IO.puts("* #{inspect(self())} ===> #{msg} ")
 end
 
 # socket options :
