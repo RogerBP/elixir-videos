@@ -6,17 +6,7 @@ defmodule Servidor.HttpServer do
       :gen_tcp.listen(port, [:binary, packet: :raw, active: false, reuseaddr: true])
 
     accept_connection(listen_socket)
-    # try do
-    #   accept_connection(listen_socket)
-    # rescue
-    #   e in RuntimeError -> tratar_erro(listen_socket, e)
-    # end
   end
-
-  # defp tratar_erro(listen_socket, error) do
-  #   :ok = :gen_tcp.close(listen_socket)
-  #   raise error
-  # end
 
   defp accept_connection(listen_socket) do
     log("🌎 <=== Aguardando conexão ...")
@@ -33,9 +23,13 @@ defmodule Servidor.HttpServer do
     close_socket(client_socket)
   end
 
-  defp send_response(resp, client_socket) do
+  defp send_response({:ok, resp}, client_socket) do
     log("📜 <=== Enviando resposta... ")
     :ok = :gen_tcp.send(client_socket, resp)
+  end
+
+  defp send_response({:error, :closed}, _client_socket) do
+    log("❌ <=== Erro na requisição... ")
   end
 
   defp close_socket(client_socket) do
@@ -43,12 +37,12 @@ defmodule Servidor.HttpServer do
     :ok = :gen_tcp.close(client_socket)
   end
 
-  defp get_resp(request) do
-    Servidor.Handler.handle(request)
-  end
+  defp get_resp({:ok, request}), do: {:ok, Servidor.Handler.handle(request)}
+
+  defp get_resp(request), do: request
 
   defp get_request(client_socket) do
-    log("📃 <=== Aguardando Requisição ...")
+    log("⏳ <=== Aguardando Requisição ...")
 
     :gen_tcp.recv(client_socket, 0)
     |> tratar_request()
@@ -57,10 +51,13 @@ defmodule Servidor.HttpServer do
   defp tratar_request({:ok, request}) do
     linha = get_first_line(request)
     log("📃 <=== Requisição recebida: #{linha}")
-    request
+    {:ok, request}
   end
 
-  defp tratar_request({:error, :closed}), do: "Erro no recebimento do request"
+  defp tratar_request(request) do
+    log(inspect(request))
+    request
+  end
 
   defp get_first_line(request) do
     [linha | _] = String.split(request, "\n")
