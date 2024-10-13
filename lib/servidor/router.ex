@@ -13,15 +13,19 @@ defmodule Servidor.Router do
     %{conv | resp_body: "#{dataStr} Minha biblioteca", status: 200}
   end
 
-  def route(%{path: "/zebra"}) do
-    raise "... deu zebra ..."
-  end
-
   def route(%{path: "/timer/" <> time} = conv) do
     String.to_integer(time)
     |> :timer.sleep()
 
     %{conv | resp_body: "Dormindo por #{time} ms"}
+  end
+
+  def route(%{path: "/zebra"}) do
+    raise "... deu zebra ..."
+  end
+
+  def route(%{path: "/zebra/1"}) do
+    raise ArgumentError, message: "... deu zebra ..."
   end
 
   def route(%{path: "/pages/" <> file_name} = conv) do

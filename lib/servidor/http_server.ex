@@ -1,6 +1,6 @@
 defmodule Servidor.HttpServer do
   def start(port) when port > 1023 do
-    log("🎧 ===> Escutando na porta #{port} ...")
+    log("🎧 ===> Escutando na porta #{port} ..")
 
     {:ok, listen_socket} =
       :gen_tcp.listen(port, [:binary, packet: :raw, active: false, reuseaddr: true])
@@ -23,88 +23,59 @@ defmodule Servidor.HttpServer do
     close_socket(client_socket)
   end
 
-  defp send_response({:ok, resp}, client_socket) do
-    log("📜 <=== Enviando resposta... ")
-    :ok = :gen_tcp.send(client_socket, resp)
-  end
-
-  defp send_response({:error, :closed}, _client_socket) do
-    log("❌ <=== Erro na requisição... ")
-  end
-
   defp close_socket(client_socket) do
-    log("🚫 <=== Fechando socket... ")
+    log("🚫 <=== Fechando socket...")
     :ok = :gen_tcp.close(client_socket)
   end
 
-  defp get_resp({:ok, request}), do: {:ok, Servidor.Handler.handle(request)}
+  defp send_response({:ok, resp}, client_socket) do
+    log("📜 <=== Enviando resposta...")
+    :ok = :gen_tcp.send(client_socket, resp)
+  end
 
-  defp get_resp(request), do: request
+  defp send_response(resp_error, _client_socket) do
+    log("❌ <=== Erro na resposta... #{inspect(resp_error)}")
+  end
+
+  defp get_resp({:ok, request}) do
+    try do
+      {:ok, Servidor.Handler.handle(request)}
+    rescue
+      e -> {:error, e}
+    end
+  end
+
+  defp get_resp(received), do: received
 
   defp get_request(client_socket) do
     log("⏳ <=== Aguardando Requisição ...")
 
     :gen_tcp.recv(client_socket, 0)
-    |> tratar_request()
+    |> receive_request()
   end
 
-  defp tratar_request({:ok, request}) do
-    linha = get_first_line(request)
-    log("📃 <=== Requisição recebida: #{linha}")
-    {:ok, request}
-  end
-
-  defp tratar_request(request) do
-    log(inspect(request))
-    request
-  end
-
-  defp get_first_line(request) do
+  defp receive_request({:ok, request} = received) do
     [linha | _] = String.split(request, "\n")
-    linha
+    log("📃 <=== Requisição recebida ... #{linha}")
+    received
   end
 
-  defp log(msg), do: IO.puts("* #{inspect(self())} ===> #{msg} ")
+  defp receive_request(received) do
+    # {:error, :closed}
+    log("❌ <=== Erro na requisição... #{inspect(received)}")
+    received
+  end
+
+  defp log(msg) do
+    dataStr =
+      Time.utc_now()
+      |> Time.truncate(:second)
+      |> Time.to_string()
+
+    IO.puts("#{inspect(self())} ===> #{dataStr} ===> #{msg}")
+  end
 end
 
-# socket options :
-# `:binary` - os dados serão tratados como binaries
-# `packet: :raw` - os dados nos devem fornecidos totalmente sem manipulação de pacotes
-# `active: false` - os dados serão recebidos na chamada da função `:gen_tcp.recv/2`
-# `reuseaddr: true` - permite a reutilizaçào de endereço caso dê alguma zebra
-
-# O servidor abre uma porta
-#   - cria um socket e fica aguardando (escutando) por um client
-#   - no nosso caso o client será o browser
-# O client (browser) envia uma requisição de conexão
-# O servidor aceita a requisição e cria um client socket
-# O client (browser) usa o client socket para enviar uma requisição http
-# O servidor aceita a requisição, processa e envia uma resposta pelo mesmo client socket
-# O servidor fecha o client socket e agaurda uma nova requisição
-
-# Erlang / OTP - Open Telecon Platform
-# Módulo: gen_tcp
-
-# Conversão / Transcodificação
-# Erlang                          ====> Elixir
-# fn() ->   (função)              ====> def fn do
-# lowercase (ok)                  ====> atoms (:ok)
-# uppercase (LSock)               ====> var (lsoc)
-# módulos   (gen_tcp)             ====> adicionar ":" (:gen_tcp)
-# gen_tcp:listen (função)         ====> :gen_tcp.listen
-# lista de tuplas                 ====> keywordlist
-#    {packet, 0}, {active, false} ====> {:packet, 0}, {:active, false}
-#                                 ====> packet: 0, active: false
-# linhas terminam com ","         ====> remover
-# funções terminam com "."        ====> end
-
-#   server() ->
-#     {ok, LSock} = gen_tcp:listen(5678, [binary, {packet, 0},
-#                                         {active, false}]),
-#     {ok, Sock} = gen_tcp:accept(LSock),
-#     {ok, Bin} = do_recv(Sock, []),  =====> :gen_tcp.recv(sock, 0)
-#     ok = gen_tcp:close(Sock),
-#     ok = gen_tcp:close(LSock),
-#     Bin.
-
-#  Servidor.HttpServer.start(2000)
+# Servidor.HttpServer.start(4000)
+# spawn(fn-> IO.puts("Processo: #{inspect(self())}") end)
+# spawn(fn-> :timer.sleep(3000); IO.puts("Processo: #{inspect(self())}") end)
