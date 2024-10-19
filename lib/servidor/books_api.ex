@@ -230,4 +230,17 @@ defmodule Servidor.BooksApi do
     |> String.to_integer()
     |> get_book
   end
+
+  def get_ranking() do
+    [
+      get_book(1),
+      get_book(11),
+      get_book(30)
+    ]
+  end
+
+  def get_ranking(position) do
+    :timer.sleep(:timer.seconds(3))
+    Enum.at(get_ranking(), position - 1)
+  end
 end

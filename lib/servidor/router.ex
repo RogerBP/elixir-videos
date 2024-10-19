@@ -20,6 +20,21 @@ defmodule Servidor.Router do
     %{conv | resp_body: "Dormindo por #{time} ms"}
   end
 
+  def route(%{path: "/ranking"} = conv) do
+    primeiro = Servidor.BooksApi.get_ranking(1)
+    segundo = Servidor.BooksApi.get_ranking(2)
+    terceiro = Servidor.BooksApi.get_ranking(3)
+
+    body =
+      """
+      <div>1 - #{primeiro.title}</div>
+      <div>2 - #{segundo.title}</div>
+      <div>3 - #{terceiro.title}</div>
+      """
+
+    %{conv | resp_body: body}
+  end
+
   def route(%{path: "/zebra"}) do
     raise "... deu zebra ..."
   end
