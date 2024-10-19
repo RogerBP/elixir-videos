@@ -20,20 +20,18 @@ defmodule Servidor.Router do
     parent = self()
 
     send(parent, Servidor.BooksApi.get_ranking(1))
+    send(parent, Servidor.BooksApi.get_ranking(2))
+    send(parent, Servidor.BooksApi.get_ranking(3))
 
     primeiro =
       receive do
         msg -> msg
       end
 
-    send(parent, Servidor.BooksApi.get_ranking(2))
-
     segundo =
       receive do
         msg -> msg
       end
-
-    send(parent, Servidor.BooksApi.get_ranking(3))
 
     terceiro =
       receive do
@@ -45,9 +43,9 @@ defmodule Servidor.Router do
     body =
       """
       #{ini}
-      <div>1 - #{primeiro.title}</div>
-      <div>2 - #{segundo.title}</div>
-      <div>3 - #{terceiro.title}</div>
+      <div>1 - #{primeiro.id} - #{primeiro.title}</div>
+      <div>2 - #{segundo.id} - #{segundo.title}</div>
+      <div>3 - #{terceiro.id} - #{terceiro.title}</div>
       #{fim}
       """
 
