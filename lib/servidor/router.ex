@@ -18,13 +18,10 @@ defmodule Servidor.Router do
   def route(%{path: "/ranking"} = conv) do
     {t_ini, ini} = now()
 
-    task_1 = Task.async(fn -> Servidor.BooksApi.get_ranking(1) end)
-    task_2 = Task.async(fn -> Servidor.BooksApi.get_ranking(2) end)
-    task_3 = Task.async(fn -> Servidor.BooksApi.get_ranking(3) end)
-
-    primeiro = Task.await(task_1)
-    segundo = Task.await(task_2)
-    terceiro = Task.await(task_3)
+    [primeiro, segundo, terceiro] =
+      [1, 2, 3]
+      |> Enum.map(&Task.async(fn -> Servidor.BooksApi.get_ranking(&1) end))
+      |> Enum.map(&Task.await/1)
 
     {t_fim, fim} = now()
     tempo = Time.diff(t_fim, t_ini, :millisecond)
