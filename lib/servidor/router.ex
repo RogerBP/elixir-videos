@@ -17,26 +17,14 @@ defmodule Servidor.Router do
 
   def route(%{path: "/ranking"} = conv) do
     {t_ini, ini} = now()
-    parent = self()
 
-    pid_1 = spawn(fn -> send(parent, {self(), Servidor.BooksApi.get_ranking(1)}) end)
-    pid_2 = spawn(fn -> send(parent, {self(), Servidor.BooksApi.get_ranking(2)}) end)
-    pid_3 = spawn(fn -> send(parent, {self(), Servidor.BooksApi.get_ranking(3)}) end)
+    pid_1 = Servidor.Messenger.async_rank(1)
+    pid_2 = Servidor.Messenger.async_rank(2)
+    pid_3 = Servidor.Messenger.async_rank(3)
 
-    primeiro =
-      receive do
-        {^pid_1, msg} -> msg
-      end
-
-    segundo =
-      receive do
-        {^pid_2, msg} -> msg
-      end
-
-    terceiro =
-      receive do
-        {^pid_3, msg} -> msg
-      end
+    primeiro = Servidor.Messenger.get_msg(pid_1)
+    segundo = Servidor.Messenger.get_msg(pid_2)
+    terceiro = Servidor.Messenger.get_msg(pid_3)
 
     {t_fim, fim} = now()
     tempo = Time.diff(t_fim, t_ini, :millisecond)
