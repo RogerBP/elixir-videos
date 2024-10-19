@@ -18,13 +18,13 @@ defmodule Servidor.Router do
   def route(%{path: "/ranking"} = conv) do
     {t_ini, ini} = now()
 
-    pid_1 = Servidor.Messenger.async_rank(1)
-    pid_2 = Servidor.Messenger.async_rank(2)
-    pid_3 = Servidor.Messenger.async_rank(3)
+    task_1 = Task.async(fn -> Servidor.BooksApi.get_ranking(1) end)
+    task_2 = Task.async(fn -> Servidor.BooksApi.get_ranking(2) end)
+    task_3 = Task.async(fn -> Servidor.BooksApi.get_ranking(3) end)
 
-    primeiro = Servidor.Messenger.get_msg(pid_1)
-    segundo = Servidor.Messenger.get_msg(pid_2)
-    terceiro = Servidor.Messenger.get_msg(pid_3)
+    primeiro = Task.await(task_1)
+    segundo = Task.await(task_2)
+    terceiro = Task.await(task_3)
 
     {t_fim, fim} = now()
     tempo = Time.diff(t_fim, t_ini, :millisecond)
