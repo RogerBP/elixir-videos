@@ -16,12 +16,12 @@ defmodule Servidor.Router do
   end
 
   def route(%{path: "/ranking"} = conv) do
-    ini = now()
+    {t_ini, ini} = now()
     parent = self()
 
-    send(parent, Servidor.BooksApi.get_ranking(1))
-    send(parent, Servidor.BooksApi.get_ranking(2))
-    send(parent, Servidor.BooksApi.get_ranking(3))
+    spawn(fn -> send(parent, Servidor.BooksApi.get_ranking(1)) end)
+    spawn(fn -> send(parent, Servidor.BooksApi.get_ranking(2)) end)
+    spawn(fn -> send(parent, Servidor.BooksApi.get_ranking(3)) end)
 
     primeiro =
       receive do
@@ -38,15 +38,15 @@ defmodule Servidor.Router do
         msg -> msg
       end
 
-    fim = now()
+    {t_fim, fim} = now()
+    tempo = Time.diff(t_fim, t_ini, :millisecond)
 
     body =
       """
-      #{ini}
+      #{ini} => #{fim} : #{tempo} ms
       <div>1 - #{primeiro.id} - #{primeiro.title}</div>
       <div>2 - #{segundo.id} - #{segundo.title}</div>
       <div>3 - #{terceiro.id} - #{terceiro.title}</div>
-      #{fim}
       """
 
     %{conv | resp_body: body}
@@ -121,8 +121,13 @@ defmodule Servidor.Router do
   defp check_item_name(conv), do: conv
 
   defp now() do
-    Time.utc_now()
-    |> Time.truncate(:second)
-    |> Time.to_string()
+    t = Time.utc_now()
+
+    str =
+      t
+      |> Time.truncate(:second)
+      |> Time.to_string()
+
+    {t, str}
   end
 end
