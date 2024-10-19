@@ -19,23 +19,23 @@ defmodule Servidor.Router do
     {t_ini, ini} = now()
     parent = self()
 
-    spawn(fn -> send(parent, Servidor.BooksApi.get_ranking(1)) end)
-    spawn(fn -> send(parent, Servidor.BooksApi.get_ranking(2)) end)
-    spawn(fn -> send(parent, Servidor.BooksApi.get_ranking(3)) end)
+    pid_1 = spawn(fn -> send(parent, {self(), Servidor.BooksApi.get_ranking(1)}) end)
+    pid_2 = spawn(fn -> send(parent, {self(), Servidor.BooksApi.get_ranking(2)}) end)
+    pid_3 = spawn(fn -> send(parent, {self(), Servidor.BooksApi.get_ranking(3)}) end)
 
     primeiro =
       receive do
-        msg -> msg
+        {^pid_1, msg} -> msg
       end
 
     segundo =
       receive do
-        msg -> msg
+        {^pid_2, msg} -> msg
       end
 
     terceiro =
       receive do
-        msg -> msg
+        {^pid_3, msg} -> msg
       end
 
     {t_fim, fim} = now()

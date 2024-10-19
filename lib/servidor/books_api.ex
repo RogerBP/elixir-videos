@@ -240,7 +240,7 @@ defmodule Servidor.BooksApi do
   end
 
   def get_ranking(position) do
-    :timer.sleep(:timer.seconds(3))
+    :timer.sleep(:timer.seconds(4 - position))
     Enum.at(get_ranking(), position - 1)
   end
 end
