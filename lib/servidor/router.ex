@@ -17,9 +17,29 @@ defmodule Servidor.Router do
 
   def route(%{path: "/ranking"} = conv) do
     ini = now()
-    primeiro = Servidor.BooksApi.get_ranking(1)
-    segundo = Servidor.BooksApi.get_ranking(2)
-    terceiro = Servidor.BooksApi.get_ranking(3)
+    parent = self()
+
+    send(parent, Servidor.BooksApi.get_ranking(1))
+
+    primeiro =
+      receive do
+        msg -> msg
+      end
+
+    send(parent, Servidor.BooksApi.get_ranking(2))
+
+    segundo =
+      receive do
+        msg -> msg
+      end
+
+    send(parent, Servidor.BooksApi.get_ranking(3))
+
+    terceiro =
+      receive do
+        msg -> msg
+      end
+
     fim = now()
 
     body =
