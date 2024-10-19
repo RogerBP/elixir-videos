@@ -5,12 +5,7 @@ defmodule Servidor.Router do
   @pages_path Path.expand("../../pages", __DIR__)
 
   def route(%{path: "/"} = conv) do
-    dataStr =
-      Time.utc_now()
-      |> Time.truncate(:second)
-      |> Time.to_string()
-
-    %{conv | resp_body: "#{dataStr} Minha biblioteca", status: 200}
+    %{conv | resp_body: "#{now()} Minha biblioteca", status: 200}
   end
 
   def route(%{path: "/timer/" <> time} = conv) do
@@ -21,15 +16,19 @@ defmodule Servidor.Router do
   end
 
   def route(%{path: "/ranking"} = conv) do
+    ini = now()
     primeiro = Servidor.BooksApi.get_ranking(1)
     segundo = Servidor.BooksApi.get_ranking(2)
     terceiro = Servidor.BooksApi.get_ranking(3)
+    fim = now()
 
     body =
       """
+      #{ini}
       <div>1 - #{primeiro.title}</div>
       <div>2 - #{segundo.title}</div>
       <div>3 - #{terceiro.title}</div>
+      #{fim}
       """
 
     %{conv | resp_body: body}
@@ -102,4 +101,10 @@ defmodule Servidor.Router do
     do: %{conv | resp_body: "não encontrado", status: 404}
 
   defp check_item_name(conv), do: conv
+
+  defp now() do
+    Time.utc_now()
+    |> Time.truncate(:second)
+    |> Time.to_string()
+  end
 end

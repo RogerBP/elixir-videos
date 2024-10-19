@@ -76,7 +76,6 @@ defmodule Servidor.HttpServer do
   end
 end
 
-#
 # pid_server = spawn(fn-> Servidor.HttpServer.start(4000) end)
 # spawn(fn-> IO.puts("Processo: #{inspect(self())}") end)
 # spawn(fn-> :timer.sleep(3000); IO.puts("Processo: #{inspect(self())}") end)
